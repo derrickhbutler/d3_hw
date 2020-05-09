@@ -14,8 +14,8 @@ var svg = d3.select("#scatter")
 var chartGroup = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var xSelect = 'healthcare'
-var ySelect = 'poverty'
+var xSelect = 'poverty'
+var ySelect = 'healthcare'
 
 
 d3.csv('assets/data.csv').then( data => {
@@ -24,7 +24,7 @@ d3.csv('assets/data.csv').then( data => {
     var ymin =d3.min(data.map(d => parseFloat(d[ySelect])))
 
     var yScale = d3.scaleLinear()
-        .domain([ymin, ymax])
+        .domain([ymin - 1, ymax])
         .range([chart_height, 0])
 
     var xmax = d3.max(data.map(d => parseFloat(d[xSelect])))
@@ -57,6 +57,33 @@ chartGroup.append('g')
         .attr('cy', d => yScale(parseFloat(d[ySelect])))
         .attr('r', 10)
         .style('fill', 'blue')
+        .style('stroke', 'red')
+
+chartGroup.append('g')
+        .selectAll('text')
+        .data(data)
+        .enter()
+        .append('text')
+        .attr('x', d => xScale(parseFloat(d[xSelect])))
+        .attr('y', d => yScale(parseFloat(d[ySelect])))
+        .style('fill', 'black')
+        .text(d => d.abbr)
+
+chartGroup.append("g").append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", chart_width / 2)
+    .attr("y", chart_height + 30)
+    .text("Poverty")
+
+chartGroup.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 0 - (margin.left) )
+    .attr("x", 0 - (chart_height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Healthcare")
+
     })
 
 
